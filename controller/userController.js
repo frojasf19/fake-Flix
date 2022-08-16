@@ -6,10 +6,12 @@ let series = []
     // Si no recibe parámetro, devuelve un arreglo con todos los usuarios.
     // En caso de recibir el parámetro <plan>, devuelve sólo los usuarios correspondientes a dicho plan ('regular' o 'premium').
     export const listUsers = (req, res)=>{
+        return res.status(200).json(users)  
+    }
+    export const listUsersPlan = (req, res)=>{
         const { plan } = req.params.plan
-        if(!plan) res.status(200).json(users)
         const listUser = users.filter(e => e.plan === plan)
-        res.status(200).json(listUser)
+        return res.status(200).json(listUser)
     }
 
     // Agrega un nuevo usuario, verificando que no exista anteriormente en base a su email.
@@ -28,9 +30,9 @@ export const addUser = (req, res)=>{
         watched: []
     }
     const validation = users.find(e => e.email === email)
-    if(validation !== undefined) res.status(400).json('El usuario ya existe')
+    if(validation !== undefined) return res.status(400).json('El usuario ya existe')
     users.push(newUser)
-    res.status(200).json(`Usuario ${email} creado correctamente`)
+    return res.status(200).json(`Usuario ${email} creado correctamente`)
 }
 
   // Alterna el plan del usuario: si es 'regular' lo convierte a 'premium' y viceversa.
@@ -56,11 +58,34 @@ export const addUser = (req, res)=>{
     // Debe guardar la propiedade <rating> inicializada 0
     // Debe guardar la propiedade <reviews> que incialmente es un array vacío.(name, seasons, category, year)
 
-
+    export const addSerie = (req, res) => {
+        const { name, seasons, category, year } = req.body
+        const serie = series.filter(e => e.name === name)
+        if(serie !== undefined) res.status(400).json(`La serie ${name} ya existe`)
+        if(category !== 'regular' && category !== 'premium') res.status(404).json(`La categoria ${category} no existe`)
+        const newSerie = {
+            name,
+            seasons,
+            category,
+            year,
+            rating: 0,
+            reviews : []
+        }
+        series.push(newSerie)
+        res.status(200).json(`La serie ${name} fue agregada correctamente`)
+    }
     // Devuelve un arreglo con todas las series.
     // Si recibe una categoría como parámetro, debe filtrar sólo las series pertenecientes a la misma (regular o premium).
     // Si la categoría no existe, arroja un Error ('La categoría <nombre_de_la_categoría> no existe') y no agrega la serie.  
 
+    export const showCategory = (req, res) => {
+        const { category } = req.params.category
+        if(!category) res.json(series)
+        const verificacion = series.category.includes(category)
+        if(!verificacion) res.status(404).json(`La categoria ${category} no existe`)
+        const seriesCate = series.filter(e => e.category === category)
+        res.status(200).json(seriesCate)
+    }
 
     // Con esta función, se emula que el usuario comienza a reproducir una serie.
     // Si el usuario no existe, arroja el Error ('Usuario inexistente')
