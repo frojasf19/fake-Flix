@@ -99,7 +99,22 @@ export const addUser = (req, res)=>{
     // En caso exitoso, añadir el nombre (solo el nombre) de la serie a la propiedad <watched> del usuario.
     // Devuelve un mensaje con el formato: 'Reproduciendo <nombre de serie>'
 
+    export const play = (req, res) => {
+        const { email, serie } = req.body
+        const valiUser = users.find(e => e.email === email)
+        const valiSerie = series.find(e => e.name === serie)
+        if(valiUser && valiSerie){
+            if(valiUser.plan === 'premium' || valiSerie.category === 'regular'){
+                users.map(e => {
+                    if(e.email == email){
+                        if(!e.watched.find(e => e === serie)) e.watched.push(serie)
+                    }
+                })
+            }else return res.json('Contenido no disponible con su plan')
 
+        }else return res.json('Usuario o serie inexistente')
+        return res.json('Reproduciendo ' + serie)
+    }
 
     // Devuelve sólo las series ya vistas por el usuario
     // Si el usuario no existe, arroja el Error ('Usuario inexistente')
