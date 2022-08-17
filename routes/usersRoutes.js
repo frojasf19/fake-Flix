@@ -1,5 +1,5 @@
 import express from 'express'
-import { addSerie, addUser, listUsers, listUsersPlan, switchPlan } from '../controller/userController.js'
+import { addSerie, addUser, listUsers, listUsersPlan, listCategory, listSerie, switchPlan } from '../controller/userController.js'
 
 const routesUsers = express()
 routesUsers.use(express.json())
@@ -9,8 +9,8 @@ routesUsers.post('/users/', addUser)
 routesUsers.patch('/users/:email', switchPlan)
 
 
-// routesUsers.get('/series/', listUsers)
-// routesUsers.get('/series/:plan', listUsersPlan)
+routesUsers.get('/series/', listSerie)
+routesUsers.get('/series/:category', listCategory)
 routesUsers.post('/series/', addSerie)
 // routesUsers.patch('/series/:email', switchPlan)
 

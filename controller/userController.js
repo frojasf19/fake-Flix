@@ -74,19 +74,21 @@ export const addUser = (req, res)=>{
             reviews : []
         }
         series.push(newSerie)
-        return res.status(200).json(series)
+        return res.status(200).json('La serie fue añadida con exito')
     }
     // Devuelve un arreglo con todas las series.
     // Si recibe una categoría como parámetro, debe filtrar sólo las series pertenecientes a la misma (regular o premium).
     // Si la categoría no existe, arroja un Error ('La categoría <nombre_de_la_categoría> no existe') y no agrega la serie.  
 
-    export const showCategory = (req, res) => {
-        const { category } = req.params.category
-        if(!category) res.json(series)
-        const verificacion = series.category.includes(category)
-        if(!verificacion) res.status(404).json(`La categoria ${category} no existe`)
+    export const listSerie = (req, res) => {
+        res.status(200).json(series)
+    }
+
+    export const listCategory = (req, res) => {
+        const category = req.params.category
+        if(category !== 'regular' && category !== 'premium') return res.status(404).json(`La categoria ${category} no existe`)
         const seriesCate = series.filter(e => e.category === category)
-        res.status(200).json(seriesCate)
+        return res.status(200).json(seriesCate)
     }
 
     // Con esta función, se emula que el usuario comienza a reproducir una serie.
