@@ -40,15 +40,17 @@ export const addUser = (req, res)=>{
   // Ej: 'Martu, ahora tienes el plan premium'
   // Si el usuario no existe, arroja el Error ('Usuario inexistente') 
     export const switchPlan = (req, res)=>{
-        const { email } = req.params.email
-        const user = users.filter(e => e.email === email)
-        if(user === undefined) res.status(400).json('Usuario inexistente')
-        if(user.plan === 'regular'){
-            user.plan = 'premium'
-        }else{
-            user.plan = 'regular'
+        const email = req.params.email
+        users.map(u => {
+        if(u.email == email) {
+            if(u.plan === "regular") u.plan = "premium";
+            else u.plan === "regular";
+         //u.plan === "regular" ? u.plan = "premium" : u.plan = "regular";
+            return res.json(`${u.name}, ahora tienes el plan ${u.plan}`)
+        } else{
+         res.json(users)
         }
-        res.status(200).json(`${user.name} ahora tienes el plan ${user.plan}`)
+        })
     }
     // Agrega una nueva serie al catálogo.
     // Si la serie ya existe, no la agrega y arroja un Error ('La serie <nombre_de_la_serie> ya existe')
@@ -61,8 +63,8 @@ export const addUser = (req, res)=>{
     export const addSerie = (req, res) => {
         const { name, seasons, category, year } = req.body
         const serie = series.filter(e => e.name === name)
-        if(serie !== undefined) res.status(400).json(`La serie ${name} ya existe`)
-        if(category !== 'regular' && category !== 'premium') res.status(404).json(`La categoria ${category} no existe`)
+        if(serie === undefined) return res.status(400).json(`La serie ${name} ya existe`)
+        if(category !== 'regular' && category !== 'premium') return res.status(404).json(`La categoria ${category} no existe`)
         const newSerie = {
             name,
             seasons,
@@ -72,7 +74,7 @@ export const addUser = (req, res)=>{
             reviews : []
         }
         series.push(newSerie)
-        res.status(200).json(`La serie ${name} fue agregada correctamente`)
+        return res.status(200).json(series)
     }
     // Devuelve un arreglo con todas las series.
     // Si recibe una categoría como parámetro, debe filtrar sólo las series pertenecientes a la misma (regular o premium).

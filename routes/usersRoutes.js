@@ -1,11 +1,17 @@
 import express from 'express'
-import { addUser, listUsers, listUsersPlan } from '../controller/userController.js'
+import { addSerie, addUser, listUsers, listUsersPlan, switchPlan } from '../controller/userController.js'
 
 const routesUsers = express()
 routesUsers.use(express.json())
-routesUsers.get('/', listUsers)
-routesUsers.get('/:plan', listUsersPlan)
+routesUsers.get('/users/', listUsers)
+routesUsers.get('/users/:plan', listUsersPlan)
+routesUsers.post('/users/', addUser)
+routesUsers.patch('/users/:email', switchPlan)
 
-routesUsers.post('/', addUser)
+
+// routesUsers.get('/series/', listUsers)
+// routesUsers.get('/series/:plan', listUsersPlan)
+routesUsers.post('/series/', addSerie)
+// routesUsers.patch('/series/:email', switchPlan)
 
 export default routesUsers
