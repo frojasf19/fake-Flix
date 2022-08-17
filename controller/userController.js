@@ -118,7 +118,16 @@ export const addUser = (req, res)=>{
 
     // Devuelve sólo las series ya vistas por el usuario
     // Si el usuario no existe, arroja el Error ('Usuario inexistente')
-
+    export const playUser = (req, res) => {
+        const email = req.params.email
+        let vali = users.find(e => e.email == email)
+        if(!vali) return res.json('Usuario inexistente')
+        users.map(e => {
+            if(e.email == email){
+                return res.json(e.watched)
+            }
+        })
+    }
 
 
     // Asigna un puntaje de un usuario para una serie:
