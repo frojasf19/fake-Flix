@@ -1,4 +1,4 @@
-const categorias = ['regular', 'premium']
+//const categorias = ['regular', 'premium']
 
 let users = []
 let series = []
@@ -7,7 +7,7 @@ let series = []
     // En caso de recibir el parámetro <plan>, devuelve sólo los usuarios correspondientes a dicho plan ('regular' o 'premium').
     export const listUsers = (req, res)=>{
         return res.status(200).json(users)  
-    }
+    } 
     export const listUsersPlan = (req, res)=>{
         const { plan } = req.params.plan
         const listUser = users.filter(e => e.plan === plan)
@@ -129,7 +129,6 @@ export const addUser = (req, res)=>{
         })
     }
 
-
     // Asigna un puntaje de un usuario para una serie:
     // Actualiza la propiedad <reviews> de la serie, guardando en dicho arreglo un objeto con el formato { email : email, score : score } (ver examples.json)
     // Actualiza la propiedad <rating> de la serie, que debe ser un promedio de todos los puntajes recibidos.
@@ -137,10 +136,29 @@ export const addUser = (req, res)=>{
     // Si el usuario no existe, arroja el Error ('Usuario inexistente') y no actualiza el puntaje.
     // Si la serie no existe, arroja el Error ('Serie inexistente') y no actualiza el puntaje.
     // Debe recibir un puntaje entre 1 y 5 inclusive. En caso contrario arroja el Error ('Puntaje inválido') y no actualiza el puntaje.
-    // Si el usuario no reprodujo la serie, arroja el Error ('Debes reproducir el contenido para poder puntuarlo') y no actualiza el puntaje. >> Hint: pueden usar la función anterior
+    // Si el usuario no reprodujo la serie, arroja el Error ('Debes reproducir el contenido para poder puntuarlo') y no actualiza el puntaje.
 
-
-
+    export const rateSerie = (req, res) => {
+        const { score } = req.body
+        const { serie, email } = req.params
+        const valiUser = users.find(e => e.email == email)
+        const valiSerie = series.find(e => e.name === serie)
+        if(!valiUser && !valiSerie && score < 1 && score > 5) return res.json('Usuario, serie o puntaje no valido')
+        const visto = valiUser.watched.find(e => e == serie)
+        if(!visto) return res.json('Debes de reproducir la serie para poder puntuarlo')
+        series.map(e => {
+            if(e.name == serie){
+                let act = {
+                    email,
+                    score
+                }
+                e.reviews.push(act)
+                let sumaRating = e.rating.reduce((a, c) => a + c) / e.rating.length
+                e.rating = sumaRating
+                return res.json(`Le haz dado ${score} puntos a la serie ${serie}`)
+            }
+        })
+    }
 
 
 
